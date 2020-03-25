@@ -9,7 +9,7 @@ namespace GitFit.Models
     public class Entry
     {
         [Key]
-        public int entryId { get; set; }
+        public int id { get; set; }
         [Required]
         [DataType(DataType.Date)]
 
