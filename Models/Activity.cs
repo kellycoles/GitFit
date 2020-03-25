@@ -11,8 +11,7 @@ namespace GitFit.Models
         [Key]
         public int activityId { get; set; }
         [Required]
-        [DataType(DataType.Date)]
-
+       
         [Display(Name = "Duration")]
         public int duration { get; set; }
 
