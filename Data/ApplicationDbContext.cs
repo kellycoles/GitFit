@@ -31,6 +31,7 @@ namespace GitFit.Data
             modelBuilder.Entity<Activity>().ToTable("Activity");
             modelBuilder.Entity<Biometric>().ToTable("Biometric");
 
+
             //Seed Database
             //=====================================================
 

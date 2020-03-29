@@ -11,9 +11,11 @@ namespace GitFit.Models
         [Key]
         public int ActivityId { get; set; }
 
+        [Required]
         [Display(Name = "Activity")]
         public string Type { get; set; }
 
+        [Required]
         public int Duration { get; set; }
 
         [Display(Name = "Intensity Level")]
