@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GitFit.Models
 {
-    public class Biometrics
+    public class Biometric
     {
         [key]
-        public int id{ get; set; }
+        public int BiometricId{ get; set; }
 
-        [Display(Name = "Height")]
-        public int height { get; set; }
+        public int Height { get; set; }
 
-        [Display(Name = "Weight")]
-        public int weight{ get; set; }
+        public int Weight{ get; set; }
 
-        [Display(Name = "Age")]
-        public int age { get; set; }
+        public int Age { get; set; }
 
-        [Display(Name = "Sex")]
-        public string sex { get; set; }
+        public string Sex { get; set; }
         [Required]
-        public int userId { get; set; }
+        public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
     }

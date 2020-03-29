@@ -9,17 +9,22 @@ namespace GitFit.Models
     public class Activity
     {
         [Key]
-        public int activityId { get; set; }
-        [Required]
-       
-        [Display(Name = "Duration")]
-        public int duration { get; set; }
+        public int ActivityId { get; set; }
 
-        [Display(Name = "Intensity")]
-        public string intensity { get; set; }
+        [Display(Name = "Activity")]
+        public string Type { get; set; }
+
+        public int Duration { get; set; }
+
+        [Display(Name = "Intensity Level")]
+        public string Intensity { get; set; }
 
         [Required]
-        public int userId { get; set; }
+        public int EntryId { get; set; }
+        public Entry Entry { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
     }
