@@ -13,6 +13,10 @@ namespace GitFit.Data
             : base(options)
         {
         }
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet <ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Entry> Entry { get; set; }
+        public DbSet <Activity> Activity { get; set; }
+        public DbSet<Biometric> Biometric{ get; set; }
     }
+
 }
