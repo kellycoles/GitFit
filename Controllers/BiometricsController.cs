@@ -12,26 +12,27 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GitFit.Controllers
 {
-    public class ActivitiesController : Controller
+    public class BiometricsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-        public ActivitiesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public BiometricsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         [Authorize]
-        // GET: Activities
+
+        // GET: Biometrics
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Activity.Include(a => a.Entry).Include(a => a.User);
+            var applicationDbContext = _context.Biometric.Include(b => b.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Activities/Details/5
+        // GET: Biometrics/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,45 +40,42 @@ namespace GitFit.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity
-                .Include(a => a.Entry)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.ActivityId == id);
-            if (activity == null)
+            var biometric = await _context.Biometric
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(m => m.BiometricId == id);
+            if (biometric == null)
             {
                 return NotFound();
             }
 
-            return View(activity);
+            return View(biometric);
         }
 
-        // GET: Activities/Create
+        // GET: Biometrics/Create
         public IActionResult Create()
         {
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId");
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             return View();
         }
 
-        // POST: Activities/Create
+        // POST: Biometrics/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ActivityId,Type,Duration,Intensity,EntryId,UserId")] Activity activity)
+        public async Task<IActionResult> Create([Bind("BiometricId,Height,Weight,Age,Sex,UserId")] Biometric biometric)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(activity);
+                _context.Add(biometric);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId", activity.EntryId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", activity.UserId);
-            return View(activity);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", biometric.UserId);
+            return View(biometric);
         }
 
-        // GET: Activities/Edit/5
+        // GET: Biometrics/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,24 +83,23 @@ namespace GitFit.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity.FindAsync(id);
-            if (activity == null)
+            var biometric = await _context.Biometric.FindAsync(id);
+            if (biometric == null)
             {
                 return NotFound();
             }
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId", activity.EntryId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", activity.UserId);
-            return View(activity);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", biometric.UserId);
+            return View(biometric);
         }
 
-        // POST: Activities/Edit/5
+        // POST: Biometrics/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Type,Duration,Intensity,EntryId,UserId")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("BiometricId,Height,Weight,Age,Sex,UserId")] Biometric biometric)
         {
-            if (id != activity.ActivityId)
+            if (id != biometric.BiometricId)
             {
                 return NotFound();
             }
@@ -111,12 +108,12 @@ namespace GitFit.Controllers
             {
                 try
                 {
-                    _context.Update(activity);
+                    _context.Update(biometric);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityExists(activity.ActivityId))
+                    if (!BiometricExists(biometric.BiometricId))
                     {
                         return NotFound();
                     }
@@ -127,12 +124,11 @@ namespace GitFit.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId", activity.EntryId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", activity.UserId);
-            return View(activity);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", biometric.UserId);
+            return View(biometric);
         }
 
-        // GET: Activities/Delete/5
+        // GET: Biometrics/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,32 +136,31 @@ namespace GitFit.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity
-                .Include(a => a.Entry)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.ActivityId == id);
-            if (activity == null)
+            var biometric = await _context.Biometric
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(m => m.BiometricId == id);
+            if (biometric == null)
             {
                 return NotFound();
             }
 
-            return View(activity);
+            return View(biometric);
         }
 
-        // POST: Activities/Delete/5
+        // POST: Biometrics/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activity = await _context.Activity.FindAsync(id);
-            _context.Activity.Remove(activity);
+            var biometric = await _context.Biometric.FindAsync(id);
+            _context.Biometric.Remove(biometric);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ActivityExists(int id)
+        private bool BiometricExists(int id)
         {
-            return _context.Activity.Any(e => e.ActivityId == id);
+            return _context.Biometric.Any(e => e.BiometricId == id);
         }
     }
 }

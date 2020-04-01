@@ -7,31 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GitFit.Data;
 using GitFit.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace GitFit.Controllers
 {
-    public class ActivitiesController : Controller
+    public class EntriesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-        public ActivitiesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public EntriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         [Authorize]
-        // GET: Activities
+
+        // GET: Entries
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Activity.Include(a => a.Entry).Include(a => a.User);
+            var applicationDbContext = _context.Entry.Include(e => e.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Activities/Details/5
+        // GET: Entries/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,45 +40,42 @@ namespace GitFit.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity
-                .Include(a => a.Entry)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.ActivityId == id);
-            if (activity == null)
+            var entry = await _context.Entry
+                .Include(e => e.User)
+                .FirstOrDefaultAsync(m => m.EntryId == id);
+            if (entry == null)
             {
                 return NotFound();
             }
 
-            return View(activity);
+            return View(entry);
         }
 
-        // GET: Activities/Create
+        // GET: Entries/Create
         public IActionResult Create()
         {
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId");
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             return View();
         }
 
-        // POST: Activities/Create
+        // POST: Entries/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ActivityId,Type,Duration,Intensity,EntryId,UserId")] Activity activity)
+        public async Task<IActionResult> Create([Bind("EntryId,Date,Notes,UserId")] Entry entry)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(activity);
+                _context.Add(entry);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId", activity.EntryId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", activity.UserId);
-            return View(activity);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", entry.UserId);
+            return View(entry);
         }
 
-        // GET: Activities/Edit/5
+        // GET: Entries/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,24 +83,23 @@ namespace GitFit.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity.FindAsync(id);
-            if (activity == null)
+            var entry = await _context.Entry.FindAsync(id);
+            if (entry == null)
             {
                 return NotFound();
             }
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId", activity.EntryId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", activity.UserId);
-            return View(activity);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", entry.UserId);
+            return View(entry);
         }
 
-        // POST: Activities/Edit/5
+        // POST: Entries/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ActivityId,Type,Duration,Intensity,EntryId,UserId")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("EntryId,Date,Notes,UserId")] Entry entry)
         {
-            if (id != activity.ActivityId)
+            if (id != entry.EntryId)
             {
                 return NotFound();
             }
@@ -111,12 +108,12 @@ namespace GitFit.Controllers
             {
                 try
                 {
-                    _context.Update(activity);
+                    _context.Update(entry);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityExists(activity.ActivityId))
+                    if (!EntryExists(entry.EntryId))
                     {
                         return NotFound();
                     }
@@ -127,12 +124,11 @@ namespace GitFit.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EntryId"] = new SelectList(_context.Entry, "EntryId", "UserId", activity.EntryId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", activity.UserId);
-            return View(activity);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", entry.UserId);
+            return View(entry);
         }
 
-        // GET: Activities/Delete/5
+        // GET: Entries/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,32 +136,31 @@ namespace GitFit.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity
-                .Include(a => a.Entry)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.ActivityId == id);
-            if (activity == null)
+            var entry = await _context.Entry
+                .Include(e => e.User)
+                .FirstOrDefaultAsync(m => m.EntryId == id);
+            if (entry == null)
             {
                 return NotFound();
             }
 
-            return View(activity);
+            return View(entry);
         }
 
-        // POST: Activities/Delete/5
+        // POST: Entries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activity = await _context.Activity.FindAsync(id);
-            _context.Activity.Remove(activity);
+            var entry = await _context.Entry.FindAsync(id);
+            _context.Entry.Remove(entry);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ActivityExists(int id)
+        private bool EntryExists(int id)
         {
-            return _context.Activity.Any(e => e.ActivityId == id);
+            return _context.Entry.Any(e => e.EntryId == id);
         }
     }
 }
