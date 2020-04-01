@@ -1,2 +1,3 @@
 <img src = "wwwroot/images/nav-logo.png"/>  GitFit
+									Fitness Activity Tracker
 -----
