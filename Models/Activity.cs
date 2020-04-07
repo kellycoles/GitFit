@@ -24,7 +24,7 @@ namespace GitFit.Models
         [Required]
         public int EntryId { get; set; }
         public Entry Entry { get; set; }
-
+        public List <Entry> Entries { get; set;}
         [Required]
         public string UserId { get; set; }
 
