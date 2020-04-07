@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GitFit.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200329082354_deleteConstraintRestrict")]
-    partial class deleteConstraintRestrict
+    [Migration("20200407000952_secondDB")]
+    partial class secondDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -142,7 +142,7 @@ namespace GitFit.Migrations
                         {
                             Id = "00000000-ffff-ffff-ffff-ffffffffffff",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d0e277f8-1d8e-42d6-bfd5-172916ae3fed",
+                            ConcurrencyStamp = "5dbe0547-b43c-482e-a9ac-79c20ec9fc8f",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             FirstName = "admin",
@@ -150,7 +150,7 @@ namespace GitFit.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMTvPNURF5L/PO8ORXo32d149Abf+Gcopsv+FVOHuhWf0WZa83g/OYY02GvkmOoqmQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEH54F4X7o5jn7qhmLiUyvun1OW6v3flNH2Ja3L7VMuezfWvYJCSqIaZS8LyHYmoKrA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
                             TwoFactorEnabled = false,
@@ -206,6 +206,9 @@ namespace GitFit.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -217,6 +220,8 @@ namespace GitFit.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("EntryId");
+
+                    b.HasIndex("ActivityId");
 
                     b.HasIndex("UserId");
 
@@ -393,6 +398,10 @@ namespace GitFit.Migrations
 
             modelBuilder.Entity("GitFit.Models.Entry", b =>
                 {
+                    b.HasOne("GitFit.Models.Activity", null)
+                        .WithMany("Entries")
+                        .HasForeignKey("ActivityId");
+
                     b.HasOne("GitFit.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")

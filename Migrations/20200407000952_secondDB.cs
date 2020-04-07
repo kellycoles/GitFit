@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GitFit.Migrations
 {
-    public partial class initail : Migration
+    public partial class secondDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -185,7 +185,8 @@ namespace GitFit.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(nullable: false),
                     Notes = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: false)
+                    UserId = table.Column<string>(nullable: false),
+                    ActivityId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -204,7 +205,7 @@ namespace GitFit.Migrations
                 {
                     ActivityId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: false),
                     Duration = table.Column<int>(nullable: false),
                     Intensity = table.Column<string>(nullable: true),
                     EntryId = table.Column<int>(nullable: false),
@@ -218,7 +219,7 @@ namespace GitFit.Migrations
                         column: x => x.EntryId,
                         principalTable: "Entry",
                         principalColumn: "EntryId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Activity_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -230,7 +231,7 @@ namespace GitFit.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "00000000-ffff-ffff-ffff-ffffffffffff", 0, "9a4c6f9c-8203-4b99-b15c-10c49f0a72f5", "admin@admin.com", true, "admin", "admin", false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEM2iJtw2S2uFSpAeuC18+SRDualLvtMJ9kYMBd09dVxJ8+mb+6KB9gxHk5pmE92oRg==", null, false, "7f434309-a4d9-48e9-9ebb-8803db794577", false, "admin@admin.com" });
+                values: new object[] { "00000000-ffff-ffff-ffff-ffffffffffff", 0, "5dbe0547-b43c-482e-a9ac-79c20ec9fc8f", "admin@admin.com", true, "admin", "admin", false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEH54F4X7o5jn7qhmLiUyvun1OW6v3flNH2Ja3L7VMuezfWvYJCSqIaZS8LyHYmoKrA==", null, false, "7f434309-a4d9-48e9-9ebb-8803db794577", false, "admin@admin.com" });
 
             migrationBuilder.InsertData(
                 table: "Biometric",
@@ -239,8 +240,8 @@ namespace GitFit.Migrations
 
             migrationBuilder.InsertData(
                 table: "Entry",
-                columns: new[] { "EntryId", "Date", "Notes", "UserId" },
-                values: new object[] { 1, new DateTime(2020, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "walked in the neighborhood", "00000000-ffff-ffff-ffff-ffffffffffff" });
+                columns: new[] { "EntryId", "ActivityId", "Date", "Notes", "UserId" },
+                values: new object[] { 1, null, new DateTime(2020, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "walked in the neighborhood", "00000000-ffff-ffff-ffff-ffffffffffff" });
 
             migrationBuilder.InsertData(
                 table: "Activity",
@@ -302,15 +303,29 @@ namespace GitFit.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Entry_ActivityId",
+                table: "Entry",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Entry_UserId",
                 table: "Entry",
                 column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Entry_Activity_ActivityId",
+                table: "Entry",
+                column: "ActivityId",
+                principalTable: "Activity",
+                principalColumn: "ActivityId",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Activity");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Activity_Entry_EntryId",
+                table: "Activity");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -331,10 +346,13 @@ namespace GitFit.Migrations
                 name: "Biometric");
 
             migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "Entry");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Activity");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

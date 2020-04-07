@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -15,6 +16,7 @@ namespace GitFit.Models
 
         public string Notes { get; set; }
 
+        public List <Activity> Activity { get; set; }
         [Required]
         public string UserId { get; set; }
 

@@ -88,7 +88,7 @@ namespace GitFit.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
                     //return LocalRedirect(returnUrl);
-                    return RedirectToAction("index", "entries");
+                    return RedirectToAction("index", "activities");
                 }
                 if (result.RequiresTwoFactor)
                 {
