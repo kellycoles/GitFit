@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GitFit.Data;
 using GitFit.Models;
+using GitFit.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
@@ -28,7 +29,9 @@ namespace GitFit.Controllers
         // GET: Entries
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Entry.Include(e => e.User);
+            //var viewModel = new ActivityEntryViewModel();
+            var applicationDbContext = _context.Entry
+                .Include(e => e.User);
             return View(await applicationDbContext.ToListAsync());
         }
 

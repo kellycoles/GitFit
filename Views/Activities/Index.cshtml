@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Entry.Date)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Type)
             </th>
             <th>
@@ -21,13 +24,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.Intensity)
             </th>
-     
+
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Entry.Date)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Type)
             </td>
@@ -37,7 +43,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Intensity)
             </td>
-         
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ActivityId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ActivityId">Details</a> |
